@@ -4,15 +4,16 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link   rel="icon" href="https://course.thinknspeak.net/TOOLS/TEACH/DCRes/favicon.ico" type="image/x-icon" />
+  <link   rel="icon" href=../../../../DCRes/favicon.ico" type="image/x-icon" />
+  <!-- <link   rel="shortcut icon" href="../../../TEACH_C/DCRes/favicon.ico" type="image/x-icon"> -->
 
   <script>
     window.AudioNotRequired = true;
   </script>
   <script>window.DisableMicrophone =  true;</script>
-  <script id="DCTools" src="https://course.thinknspeak.net/TOOLS/TEACH/DCMins/DCTools.js"></script>
+  <script id="DCTools"  src="../../../../DCLibs/DCTools.js"></script>
 
-  <title>VideoPlayer</title>
+  <title>Video Player</title>
 
 <!-- PAGES DATA -->
 <style id="SlideShow"> 
@@ -168,11 +169,11 @@ p {
 
 
 
-</style>      
+</style>   
 </head>
 <body id="MainBody" style="opacity:unset; left:0; " >
 
-  <img id="Waiting"      src="https://course.thinknspeak.net/TOOLS/TEACH/DCRes/SquareCircle-loader.gif">
+  <img id="Waiting"      src="../../../../DCRes/SquareCircle-loader.gif">
   <p   id="WaitingText"  ></p> 
   <script> 
     var WaitingText = document.getElementById("WaitingText"); 
@@ -180,14 +181,14 @@ p {
     DisplayReport("Show Waitting ", WaitingText, WaitingText.innerText);
   </script>
   
-  <script src="https://course.thinknspeak.net/TOOLS/TEACH/DCMins/HandleVideo.4.0.js"></script>
+  <script src="../../../../DCLibs/HandleVideo.4.0.js"></script>
 
 <div  id="PageHeader"></div>
 <div id="PageBody" >
 <div id="VideoBody" style="position:absolute ; top:0vh; left:0vw; height:85vh; width:100vw; text-align: unset;"> 
   <video id="Vid_0" src="" style="opacity: 1; visibility: visible;width: inherit;height: inherit;" class=""></video>  
 </div> 
-
+  
 <div id="AudioBody"></div>
 
 <div id="Interact">
@@ -198,9 +199,12 @@ p {
   <!-- <a id="Audio1" href="TheMain_1.wav" style="display:none" >Visit W3Schools.com!</a> -->
   <!-- <audio id="Audio2" src="TheMain_1.wav"></audio> -->
 </div>
+
+
 <script>
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function SetpageTitlePlus (ThisText){
+function SetpageTitlePlus (ThisText)
+{
   SceneName         = GetCurrentDirOnly();
 
   SetInnerHtmlById('TITLE', SceneName + ThisText );
@@ -208,7 +212,7 @@ function SetpageTitlePlus (ThisText){
 }
 
 function StartShow() {
-  let TheBody          = GetMainBody();
+let TheBody          = GetMainBody();
   TraceReport("New Show started...");
   Waiting.style.display = "none";
   document.getElementById("WaitingText").innerText = ""; 
@@ -221,7 +225,8 @@ function StartShow() {
     }
   }
 }
-function IntializePage(){
+function IntializePage()
+{
   TraceReport("InitializePage()");
   SetpageTitlePlus("");
   if(window.OnThisModuleLoaded){
@@ -328,13 +333,12 @@ function Init (){
     switch(ThisEvent.type){
     case "touchstart":
     case "mousedown": 
-      if(RecDownTimeStamp      == ThisEvent.timeStamp){
-        return;
-      }
-      RecDownTimeStamp          = ThisEvent.timeStamp;    
       if(!(leftMouseButtonOnlyDown)){return;}
+      if(DragStart){return;}
+      if(VideoDragStart){return;}
+      if(VideoSwipeStart){return;}
       if(IsNotNull(CaptStarted)){return;} //  else {CaptStarted = ThisEvent.timeStamp || 1;}
-      if(IsNotNull(VideoSwipeStart)){return; }
+      RecDownTimeStamp          = ThisEvent.timeStamp;    
       let ThisElement           = document.elementFromPoint(ThisEvent.pageX, ThisEvent.pageY);
       if((ThisElement)
       && (ThisElement.id)
@@ -363,6 +367,8 @@ function Init (){
       return;
     case "touchend":
     case "mouseup":   
+      if(DragStart){return;}
+      if(VideoDragStart){return;}
       if(IsNotNull(CaptStarted)){return;} //  else {CaptStarted = ThisEvent.timeStamp || 1;}
       if(IsNotNull(VideoSwipeStart)){
         if((VideoSwipeStart.AppliedCount > 0)
@@ -373,6 +379,7 @@ function Init (){
             // DebugLog ("Video on MouseUp prevented", VideoSwipeStart.Applied);
           }
         }
+        // FOR THE CLICK IN COMPUTER
         if(DetectTouch ()){
           VideoSwipeStart = null;
           // DebugLog ("VideoSwipeStart has been reseted");
@@ -400,13 +407,12 @@ function Init (){
       return;      
     case "touchmove":  
     case "mousemove": 
+      if(DragStart){return;}
+      if(VideoDragStart){return;}
+      if(!(leftMouseButtonOnlyDown)){return;}
+      if(IsNotNull(CaptStarted)){return;} //  else {CaptStarted = ThisEvent.timeStamp || 1;}
       if(RecMoveTimeStamp      == ThisEvent.timeStamp){return;}
       RecMoveTimeStamp          = ThisEvent.timeStamp;    
-      if((!(leftMouseButtonOnlyDown))
-      ){
-        return;
-      }
-      if(IsNotNull(CaptStarted)){return;} //  else {CaptStarted = ThisEvent.timeStamp || 1;}
       if(IsNotNull(VideoSwipeStart)){
         PreventAllPropagation         (ThisEvent); // NEW TEST
         if(ThisEvent.timeStamp     == VideoSwipeStart.RecStamp){
@@ -607,6 +613,8 @@ let ThisHtmlBlock = `
     </div>
     <div id="SideFile_btn" class="SidePanelBtn" style="margin-top: 10vh;" >📇</div>
   </div>
+`
++`
   <div id="SideCtrl" class="SidePanel" >
     <div id="SideCtrlTbl" class="SidePanelTbl" style="height:360px">
       <div id="SideCtrlCnt" class="SidePanelCnt"  style="display: table-cell;vertical-align: middle;text-align: center;padding: min(1vh, 1vw);" >
@@ -647,7 +655,8 @@ let ThisHtmlBlock = `
               </div>
             </div>
         </div>
-
+`
++`
       </div>  
     </div>
     <div id="SideCtrl_btn" class="SidePanelBtn"  style="margin-top: 0vh;" >⌨</div>
@@ -1184,7 +1193,6 @@ function OnInsertLink (This, ThisEvent, ThisFileId){
 }
 DisplayReport("Show Version ", ShowVersion, "Loaded");
 </script>
-
 
 </body>
 </html>
