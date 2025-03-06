@@ -26,7 +26,8 @@ All you have to do is download it and run it in your browser.
 Or accaess it via the my website :  <a href="https://thinknspeak.net/tools/#CVideoPlayer">Here</a>
 
 This is the File menu to select video. 
-<img src="https://github.com/DCWizard/VideoPlayer/raw/refs/heads/main/img/VideoPlayerFileView.webp" >
+<img src="https://raw.githubusercontent.com/DCWizard/VideoPlayer/refs/heads/main/img/VideoPlayerFileView.gif" style="height:25%;">
+<br>
 
 This is the main view with the context menu opened. 
 <img src="https://github.com/DCWizard/VideoPlayer/raw/refs/heads/main/img/VideoPlayerMainView.webp">
