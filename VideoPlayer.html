@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link   rel="icon" href="https://course.thinknspeak.net/TOOLS/TEACH/DCRes/favicon.ico" type="image/x-icon" />
+
+  <script>
+    window.AudioNotRequired = true;
+  </script>
+  <script>window.DisableMicrophone =  true;</script>
+  <script id="DCTools" src="https://course.thinknspeak.net/TOOLS/TEACH/DCMins/DCTools.js"></script>
+
+  <title>VideoPlayer</title>
+
+<!-- PAGES DATA -->
+<style id="SlideShow"> 
+/* * { border:rgb(245, 5, 5) 1px solid; } */
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  /* box-sizing: border-box; */
+  scrollbar-width:thin;
+  /* scrollbar-color:var(--thumbBG) var(--scrollbarBG) */
+ }
+/* *:before, *:after {
+  box-sizing: border-box;
+} */
+html {
+  overflow: hidden;
+}
+html, body { 
+  width: 100vw; height: 100vh; padding: 0; margin: 0; 
+  position:absolute; left: 0px; 
+  opacity: 1.0;  transition: opacity 1.0s;
+  background: radial-gradient(#003, #000);
+	overflow: hidden;
+  color: #fff;
+  font-family: "Open Sans";
+  font-size: 18px;
+} 
+
+.RoundBut {
+	/* display: inline; */
+	padding-top: 0.25vh;
+	margin: 1.5vh 0;
+	border: solid 1px #CCC;
+	border-radius: 1em;
+	transition: .3s ease-in-out;
+	font-family: Arial Unicode MS, Arial, sans-serif, FontAwesome;
+	font-size: min(2.75vh, 2.75vw);
+	/* background-color: white; */
+  background:radial-gradient(#003, #000);
+	/* color: #1952B6; */
+  color: #b5e5de;
+	/* position: absolute; */
+	/* right: 0; */
+	/* top: 89vh; */
+	height: 5vh;
+	width: 20.25vw;
+	cursor: pointer;
+}
+textarea {
+  width:inherit;height:inherit;font-size:2.5vh;font-weight:bolder;white-space:pre;resize:none;border:0;padding:0;margin-block:0;
+}
+a {
+  display: block;
+  cursor: pointer;
+  color: #285b81;
+  font-family: fontawesome;
+  /* padding: 2vh; */
+  /* margin-top: 2vh; */
+  /* border: 1vh solid; */
+  /* border-left: 0px; */
+  /* border-right: 0px; */
+  color: #b5e5de;
+}
+
+span {
+	font-family: fontawesome;
+}
+.VideoFile::before {
+	content:"\f03d\20";
+}
+.AudioFile::before {
+	content:"\f028\20";
+}
+#Waiting { position: absolute;	margin: auto;	top: 30.5%;	left: 0; right:0;}
+#WaitingText { position: absolute;	margin: auto;	top: 45%;	left: 0; right:0; text-align: center; color: whitesmoke;}
+p {
+  margin-block-start: 0.125em;
+  margin-block-end: 0.125em;
+}
+
+
+
+
+
+
+.Boxed {
+  position: relative;
+  width: 99%;
+  padding: 5px;
+  border: 2px solid #b78846;
+  box-sizing: border-box;
+}
+@media screen and (orientation:portrait) {
+  .Boxed {
+    width: 98%;
+  }
+}
+.Boxed:before, .Boxed:after {
+  content: "•";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+  color: #b78846;
+  border: 2px solid #b78846;
+  line-height: 12px;
+  top: 5px;
+  text-align: center;
+  box-sizing: border-box;
+  box-sizing: border-box;
+}
+.Boxed:before {
+  left: 5px;
+  box-sizing: border-box;
+}
+.Boxed:after {
+  right: 5px;
+  box-sizing: border-box;
+}
+.Boxed .BoxedInner {
+  position: relative;
+  border: 2px solid #b78846;
+  padding: 2vh;
+  box-sizing: border-box;
+}
+.Boxed .BoxedInner:before, .Boxed .BoxedInner:after {
+  content: "•";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+  color: #b78846;
+  border: 2px solid #b78846;
+  line-height: 12px;
+  bottom: -2px;
+  text-align: center;
+  box-sizing: border-box;
+}
+.Boxed .BoxedInner:before {
+  left: -2px;
+  box-sizing: border-box;
+}
+.Boxed .BoxedInner:after {
+  right: -2px;
+  box-sizing: border-box;
+}
+
+
+
+
+
+
+
+
+</style>      
+</head>
+<body id="MainBody" style="opacity:unset; left:0; " >
+
+  <img id="Waiting"      src="https://course.thinknspeak.net/TOOLS/TEACH/DCRes/SquareCircle-loader.gif">
+  <p   id="WaitingText"  ></p> 
+  <script> 
+    var WaitingText = document.getElementById("WaitingText"); 
+    if(IsNotNull(WaitingText))WaitingText.innerText = "Downloading Libs";
+    DisplayReport("Show Waitting ", WaitingText, WaitingText.innerText);
+  </script>
+  
+  <script src="https://course.thinknspeak.net/TOOLS/TEACH/DCMins/HandleVideo.4.0.js"></script>
+
+<div  id="PageHeader"></div>
+<div id="PageBody" >
+<div id="VideoBody" style="position:absolute ; top:0vh; left:0vw; height:85vh; width:100vw; text-align: unset;"> 
+  <video id="Vid_0" src="" style="opacity: 1; visibility: visible;width: inherit;height: inherit;" class=""></video>  
+</div> 
+
+<div id="AudioBody"></div>
+
+<div id="Interact">
+</div>
+<div Id="Main" Class="MainPannel"></div>
+
+<div id="AudioData">
+  <!-- <a id="Audio1" href="TheMain_1.wav" style="display:none" >Visit W3Schools.com!</a> -->
+  <!-- <audio id="Audio2" src="TheMain_1.wav"></audio> -->
+</div>
+<script>
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function SetpageTitlePlus (ThisText){
+  SceneName         = GetCurrentDirOnly();
+
+  SetInnerHtmlById('TITLE', SceneName + ThisText );
+  SetPageTitle    (SceneName );
+}
+
+function StartShow() {
+  let TheBody          = GetMainBody();
+  TraceReport("New Show started...");
+  Waiting.style.display = "none";
+  document.getElementById("WaitingText").innerText = ""; 
+  if(window.OnShowStarted){
+    try{
+      OnShowStarted ();
+    }
+    catch(e){
+      console.error(e); alert(e);
+    }
+  }
+}
+function IntializePage(){
+  TraceReport("InitializePage()");
+  SetpageTitlePlus("");
+  if(window.OnThisModuleLoaded){
+      
+    try{
+      OnThisModuleLoaded();
+    }
+    catch(e){
+      console.error(e); alert(e);
+    }
+  }
+}
+window.onload         = IntializePage;
+</script>
+<script> // src="Scripts/Slide.js"
+var ShowVersion             = "Slide.js";
+var TheCopyRightNotice      = `Copyright © 2020-2024 Denis Cote ThinknSpeak ™`;
+if(IsNotNull(WaitingText)){WaitingText.innerText = "Downloading Slide Libraries";
+DisplayReport("Show Waitting ", WaitingText, WaitingText.innerText);}
+
+function OnShowStarted      (){
+  TraceReport("OnShowStarted()");
+  let ThisPrjSubView        = document.getElementById("PrjSubView");
+  ThisPrjSubView.value      = "";
+  ThisPrjSubView.innerHTML  = "";  
+  ApplyFileDropper (ThisPrjSubView);
+
+  let ThisVideoView         = document.getElementById("Vid_0");
+  ApplyFileDropper (ThisVideoView);
+     
+  Init ();
+}
+function OnThisModuleLoaded ()
+{
+  WhenDocumentReady( 
+  function(...args){ // onreadystatechange
+    // TraceReport("(document).ready Check status", this, args);
+    StartShow();
+  });
+}
+
+function ApplyFileDropper (ThisObj){
+  let ThisPrjSubView        = document.getElementById("PrjSubView");
+
+  ThisObj.ondragenter  = (ThisEvent) => {
+    ThisEvent.preventDefault();
+    ThisEvent.stopPropagation();
+    ThisPrjSubView.classList.add("highlight");
+  };
+  ThisObj.ondragleave  = (ThisEvent) => {
+    ThisEvent.preventDefault();
+    ThisEvent.stopPropagation();
+    ThisPrjSubView.classList.remove("highlight");
+  };
+  ThisObj.ondragover   = (ThisEvent) => {
+    ThisEvent.preventDefault();
+    ThisEvent.stopPropagation();
+  };
+  ThisObj.ondrop       = (ThisEvent) => {
+    ThisEvent.preventDefault();
+    ThisEvent.stopPropagation();
+    ThisPrjSubView.classList.remove("highlight");
+    ThisPrjSubView.value        = "";
+    
+    if(ThisEvent.dataTransfer){
+      let TheseItems        = ThisEvent.dataTransfer.items;
+
+      HandleInputFileObj(TheseItems, "Dropped", ProcessProjectDropped); 
+      TheSideFile.OpenSidePanel();
+
+    } else {
+      ThisPrjSubView.innerHTML     = "Dropped file list is empty: \n\n";
+    }
+  };
+}
+var ThisDisplay                   = GetElementById("VideoBody");
+let ThisVideo                     = GetElementById("Vid_0");
+var ThisVideoBar                  = document.createElement('vid-bar');
+function Init (){
+  ThisVideoBar.Attach               ("VideoBody", "Vid_0", "FreeVideoPlayer");
+  ThisVideo                       = GetElementById("Vid_0");
+  ThisVideo.controls              = (true);
+  ThisVideo.LockControlBar          (true);
+  ThisVideo.GetSetPosition          ("Bottom");
+
+
+  AddMouseSupport(window, ThisVideo, JoggThatVideo);
+  ThisDisplay.addEventListener('click',(e) => {JoggVideo     (e)}, true);
+  ThisDisplay.onmouseout      = function (e)  {JoggVideo     (e)};
+
+  function JoggThatVideo (ThisEvent){
+    ConvertTouchToMouseEvent(ThisEvent);
+    JoggVideo       (ThisEvent);
+  }
+  var VideoSwipeStart             = null;
+  let RecDownTimeStamp;
+  let RecMoveTimeStamp;
+  function JoggVideo                 (ThisEvent){
+  let leftMouseButtonOnlyDown     = IsLeftOnlyButDown(ThisEvent); 
+
+    if(!(ThisVideo.duration)){
+      return ;
+    }
+    switch(ThisEvent.type){
+    case "touchstart":
+    case "mousedown": 
+      if(RecDownTimeStamp      == ThisEvent.timeStamp){
+        return;
+      }
+      RecDownTimeStamp          = ThisEvent.timeStamp;    
+      if(!(leftMouseButtonOnlyDown)){return;}
+      if(IsNotNull(CaptStarted)){return;} //  else {CaptStarted = ThisEvent.timeStamp || 1;}
+      if(IsNotNull(VideoSwipeStart)){return; }
+      let ThisElement           = document.elementFromPoint(ThisEvent.pageX, ThisEvent.pageY);
+      if((ThisElement)
+      && (ThisElement.id)
+      ){
+        let ThisCheck        = "Vid_";
+        if(ThisCheck        != ThisElement.id.substring(0, ThisCheck.length)) {
+          return; 
+        }
+      } else {
+        return;
+      }
+      // DebugLog ("MouseDown Starting New VideoSwipeStart", );
+      VideoSwipeStart = {};
+      VideoSwipeStart.StarX         = ThisEvent.x || ThisEvent.clientX || ThisEvent.pageX;
+      VideoSwipeStart.StarY         = ThisEvent.y || ThisEvent.clientY || ThisEvent.pageY;
+      VideoSwipeStart.ThisX         = VideoSwipeStart.StarX;
+      VideoSwipeStart.ThisY         = VideoSwipeStart.StarY;
+      VideoSwipeStart.StarT         = ThisEvent.timeStamp;
+      VideoSwipeStart.RecStamp      = ThisEvent.timeStamp;
+      VideoSwipeStart.TimeStamp     = ThisEvent.timeStamp/1000;
+      VideoSwipeStart.Applied       = 0;
+      VideoSwipeStart.AppliedCount  = 0;
+      if(NoTouchSupport()){
+        PreventAllPropagation         (ThisEvent); // NEW TEST
+      }
+      return;
+    case "touchend":
+    case "mouseup":   
+      if(IsNotNull(CaptStarted)){return;} //  else {CaptStarted = ThisEvent.timeStamp || 1;}
+      if(IsNotNull(VideoSwipeStart)){
+        if((VideoSwipeStart.AppliedCount > 0)
+        && (VideoSwipeStart.Applied)
+        ){
+          if(NoTouchSupport()){
+            PreventAllPropagation     (ThisEvent);
+            // DebugLog ("Video on MouseUp prevented", VideoSwipeStart.Applied);
+          }
+        }
+        if(DetectTouch ()){
+          VideoSwipeStart = null;
+          // DebugLog ("VideoSwipeStart has been reseted");
+        }
+      }
+      return;
+    case "click":
+      if(IsNotNull(CaptStarted)){
+        DebugLog ("JogVideo on click Ignored", VideoSwipeStart); 
+        return;
+      } //  else {CaptStarted = ThisEvent.timeStamp || 1;}
+      if(IsNotNull(VideoSwipeStart)){
+        if((VideoSwipeStart.AppliedCount > 0)
+        && (VideoSwipeStart.Applied)
+        ){
+          PreventAllPropagation       (ThisEvent);
+          DebugLog ("JogVideo on click prevented", "CT:"+VideoSwipeStart.AppliedCount, "AP:"+VideoSwipeStart.Applied);
+        } else {
+          DebugLog ("JogVideo on click Passed through", "CT:"+VideoSwipeStart.AppliedCount, "AP:"+VideoSwipeStart.Applied);
+        }
+      } else {
+        DebugLog ("JogVideo on click Passed through NO Swipe Detected");
+      }
+      VideoSwipeStart = null;
+      return;      
+    case "touchmove":  
+    case "mousemove": 
+      if(RecMoveTimeStamp      == ThisEvent.timeStamp){return;}
+      RecMoveTimeStamp          = ThisEvent.timeStamp;    
+      if((!(leftMouseButtonOnlyDown))
+      ){
+        return;
+      }
+      if(IsNotNull(CaptStarted)){return;} //  else {CaptStarted = ThisEvent.timeStamp || 1;}
+      if(IsNotNull(VideoSwipeStart)){
+        PreventAllPropagation         (ThisEvent); // NEW TEST
+        if(ThisEvent.timeStamp     == VideoSwipeStart.RecStamp){
+          return;
+        }
+        VideoSwipeStart.RecStamp    = ThisEvent.timeStamp;
+        let ThisVidRect             = ThisDisplay.getBoundingClientRect();
+        let IsVertical              = (GetScreenOrientation() == "Vertical");
+        let IsTouch                 = DetectTouch ();
+        let IsTouchVertical         = (IsTouch && IsVertical);
+        let ThisX                   = ThisEvent.x || ThisEvent.clientX || ThisEvent.pageX;
+        let ThisY                   = ThisEvent.y || ThisEvent.clientY || ThisEvent.pageY; 
+        let DiffX                   = ThisX - VideoSwipeStart.ThisX;
+        let DiffY                   = ThisY - VideoSwipeStart.ThisY;
+        let UseDiff                 = DiffX; // (GetScreenOrientation() == "Vertical")?DiffY:DiffX;
+        let DistTX                  = Abs(VideoSwipeStart.StarX - ThisX);
+        let DistTY                  = Abs(VideoSwipeStart.StarY - ThisY);
+        let DistT                   = DistTX;
+        let DistPc                  = (ConvertPxToPercentW(ThisVideo, DistT)) / 100.0; //  * (IsVertical?0.5:1.0);
+        let TotalT                  = Abs(VideoSwipeStart.StarT - ThisEvent.timeStamp);
+        let FactorT                 = (TotalT/1000); 
+        // let Factor                  = ((VideoSwipeStart.AppliedCount > MultiCount)?((VideoSwipeStart.AppliedCount/4)/FactorT):SingleFactor);
+        let SingleFactor            = (0.25);
+        let MultiCount              = (4);
+        // let MultiCount              = 10;
+        let Factor                  = 1.0;
+        let Stalling                = 1;
+        let ApplyTime               = null;
+        
+        // if((ThisVidRect.width       < 480)
+        // && (DistPc                  < 50)
+        // ){
+        //    DistPc                  *= 0.25;
+        //    MultiCount               = 10;
+        // }
+        let ApplyCount              = (VideoSwipeStart.AppliedCount >= MultiCount)?(VideoSwipeStart.AppliedCount/8):1;
+        Factor                      = ((VideoSwipeStart.AppliedCount >= MultiCount)?(Abs(UseDiff)/((ApplyCount)/FactorT)*DistPc):(Abs(UseDiff)*SingleFactor));
+        if(UseDiff                 <= -(Stalling)){
+          if(ThisVideo.currentTime  < ThisVideo.duration){
+            let ThisApplyTime       = (0.166) * Factor;
+            if(ThisApplyTime        < (0.041)){
+              ThisApplyTime         = (0.041);
+            } else 
+            if(ThisApplyTime        > (2.000)){
+              ThisApplyTime         = (2.000);
+            }
+            ApplyTime               = ThisApplyTime;
+          } else {
+            ThisVideo.currentTime   = ThisVideo.duration;
+            ApplyTime               = 0;
+          }
+        } else 
+        if(UseDiff                 >= (Stalling)){
+          if(ThisVideo.currentTime  > 1){
+            let ThisApplyTime       = (-0.166) * Factor;
+            if(ThisApplyTime        > (-0.041)){
+              ThisApplyTime         = (-0.041);
+            } else 
+            if(ThisApplyTime        < (-2.000)){
+              ThisApplyTime         = (-2.000);
+            }
+            ApplyTime               = ThisApplyTime;
+          } else {
+            // ApplyTime = ThisVideo.currentTime * -1;
+            ThisVideo.currentTime   = 1;
+            ApplyTime               = 0;
+          }
+        } 
+        // else if(UseDiff > 0){if(console.Hold){DebugLog("Mouse Stalled at:", UseDiff);}}
+        if(IsNotNull(ApplyTime)){
+          if((2.000                    > Abs(ApplyTime))
+          && (1000                     > Diff(RecDownTimeStamp, RecMoveTimeStamp))){
+            return;
+          }
+          // VideoSwipeStart.StarT        = ThisEvent.timeStamp;
+          // PreventAllPropagation         (ThisEvent);
+          ThisVideo.currentTime       += ApplyTime;
+          VideoSwipeStart.ThisX        = ThisX;
+          VideoSwipeStart.ThisY        = ThisY;
+
+          VideoSwipeStart.DiffStamp    = Abs(VideoSwipeStart.TimeStamp - (ThisEvent.timeStamp/1000));
+          VideoSwipeStart.TimeStamp    = ThisEvent.timeStamp/1000;
+          
+          VideoSwipeStart.Applied     += ApplyTime;
+          VideoSwipeStart.AppliedCount++; 
+          // DebugLog("Vid Time:", FixTime(ThisVideo.currentTime), "AP+: "+FixTime(VideoSwipeStart.Applied));
+          if(console.Hold){
+            // WarnLog(ThisEvent.timeStamp, FixToTxt(VideoSwipeStart.DiffStamp,3) , ThisEvent);
+            // DebugLog ("Moving Video", "AT: "+FixToTxt(ApplyTime,3), "F: "+FixToTxt(Factor,3)
+            // , "= UD: "+PadNumber(UseDiff,2), "AC+: / ("+PadNumber(FixToTxt(ApplyCount,2),6), "FT: / "+FixToTxt(FactorT,3), ") DS: * "+FixToTxt(DistPc,2) );
+            
+            // DebugLog ("Moving Video", "AT: "+FixToTxt(ApplyTime,3), "F: "+FixToTxt(Factor,3)
+            // , "= UD: "+PadNumber(UseDiff,2), " / ("+PadNumber(ApplyCount,3), "/ "+FixToTxt(FactorT,3), ") * "+FixToTxt(DistPc,3) );
+          }
+        // } else { 
+        //   DebugLog ("Moving Pos", DiffX);
+        }
+      }
+      return;
+    }
+  }
+
+ InitVideoCtrl      ();
+
+} 
+
+let    ThisCSSBlock  = `
+  .SidePanel {
+  	/* DO NOT SET */
+  	top: 0vh;
+  	left: 0;
+  	height: 0;
+  	margin: 0;
+  	padding: 0;
+  	display: block;
+  	position: fixed;
+  	z-index: 2147483639;
+  }
+  .SidePanelTbl {
+  	/* TO BE SET INDIVIDUALLY*/
+    height: 72.5vh;
+    width:0;    
+  	background: #777777;
+    background:radial-gradient(#003, #000);
+
+  	/* DO NOT SET */
+  	display: block;
+  	float: left;
+  	overflow-x: hidden;
+  	overflow-y: auto;
+  }
+  .SidePanelCnt {
+    width: inherit;
+    height: inherit;
+  }
+  .SidePanelBtn {
+  	/* TO BE SET INDIVIDUALLY */
+  	color: white;
+  	margin-top: 0vh; /* FOR MULTIPLE SIDE BUTTON CHANGE POSITION*/
+    font-size: min(9.5vh,9.5vw);
+    line-height: min(10.5vh, 10.5vw);
+    height: min(10.5vh,10.5vw);
+    width: min(10.5vh,10.5vw);
+
+  	/* DO NOT SET */
+    display: block;
+  	float: left;
+  	text-align: center;
+  	cursor: pointer;
+  	border: none;
+  	font-weight: bolder;
+  }
+  /*
+  @media only screen and (max-width: 480px) {
+  }
+  @media screen and (orientation: portrait) {
+  }
+  */
+  .CP_MenuButton {
+  	padding: 2px;
+    border: 0;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-origin: content-box;
+    background-clip: content-box;
+    cursor: pointer;
+  	outline: none;
+    margin: 0 min(2vw, 1vh);
+    margin-top: 1.0%;
+  }
+  .CP_MenuButton > svg {
+    width: 16px;
+    height: 16px;
+  }
+  .CP_EditText{
+    display:inline-block;
+    /*padding:max(0.25vw, 0.125vh) max(0.25vw, 0.125vh); */
+    font-size: 20px;
+    line-height: 2.25;
+    border: 0px;
+  }
+`;
+AddStyleRules("SideCnt_Style", ThisCSSBlock);
+function LoadSideCnt ()
+{
+let ThisCurTime      = ToSMPTE(FixTime(0));
+let ThisHtmlBlock = `
+
+  <div id="SideFile" class="SidePanel" >
+    <div id="SideFileTbl" class="SidePanelTbl" >
+      <div id="SideFileCnt" class="SidePanelCnt" >
+        <div id="PrjSubView" placeholder="Drop Project here" style="width:inherit;height:90%;line-height: 2.0;font-size: min(4.5vh, 4.5vw);font-weight:bolder;;overflow:auto; " ></div>
+        <button id="FilesBtn"  type='file' class="RoundBut" style="left:12vw;" onclick="OnProcessFiles(this, event)"><i class="FontAwesome">📁+</i>&nbsp;&nbsp;Files  </button>
+        <button id="FolderBtn" type="file" class="RoundBut" style="left:24vw;" onclick="OnProcessFolder(this, event)"><i class="FontAwesome">📁++</i>&nbsp;&nbsp;Folder  </button>
+        <button id="ClearBtn"  type="file" class="RoundBut" style="left:24vw;" onclick="OnClearProject(this, event)"><i class="FontAwesome">⎚</i>&nbsp;&nbsp;Clear  </button>
+      </div>
+    </div>
+    <div id="SideFile_btn" class="SidePanelBtn" style="margin-top: 10vh;" >📇</div>
+  </div>
+  <div id="SideCtrl" class="SidePanel" >
+    <div id="SideCtrlTbl" class="SidePanelTbl" style="height:360px">
+      <div id="SideCtrlCnt" class="SidePanelCnt"  style="display: table-cell;vertical-align: middle;text-align: center;padding: min(1vh, 1vw);" >
+        <div>
+          <div class="CMTitle" >Volume</div>
+          <div id="CC_VolumeControl" class="CB_BarVolumeControl CMItem" style="Height:32px">
+            <div id="CC_volumeStack" class="CB_VolumeStack CB_ProgressContainer">
+              <input id="CC_VolumeBar" class="CB_VolumeControl" value="1" type="range" min="0" max="1" step="0.01">
+            </div>
+          </div>
+        </div>
+        <div >
+          <div class="CMTitle" style="margin-bottom: min(2vh,2vw);" >Video Control</div>
+          <button id="CC_DOWN" class="CP_MenuButton" tabindex="-1"><svg><use href="#Bar_Back"></use></svg></button>
+          <input id="CC_Speed" class="CP_EditText" value="100.00%" type="text" size="10" style="font-size: 20px;">
+          <button id="CC_UP"   class="CP_MenuButton" tabindex="-1"><svg><use href="#Bar_Forward"></use></svg></button>
+        </div>
+        <div style="margin-top: min(2vh,2vw);">
+          <button id="CC_BACK" class="CP_MenuButton" tabindex="-1" ><svg><use href="#Bar_Back"></use></svg></button>
+          <input id="CC_POSI"  class="CP_EditText" value="${ThisCurTime}" type="text" size="10" style="font-size: 20px;" />
+          <button id="CC_FWRD" class="CP_MenuButton" tabindex="-1" ><svg><use href="#Bar_Forward"></use></svg></button>
+        </div>
+        <div style="margin-top: min(2vh,2vw);">
+          <div id="CC_TimeStatus" class="CC_TimeStatus" style="font-size: 18px; line-height: 1.0; font-weight: bold; color:white;">
+            <time id="CC_TimeElapsed" datetime="00:00:00.000">00:00:00.000</time>
+            <br>
+            <time id="CC_Duration" datetime="00:01:40.000">00:01:40.000</time>
+          </div>
+        </div>
+       
+        <div style="margin-top: min(2vh,2vw);">
+          <div class="CC_ProgressGroupBar " style="">
+            <div id="CC_SeekTooltip" class="CB_SeekTooltip" style="font-size: 16px; line-height: 1.5; margin-bottom: 16px;" datetime="00:00:52.830">00:00:52.830</div>
+              <div class="CC_ProgressStack" style="position: relative;background: black;">
+                <progress id="CC_BufferedBar" class="CB_BufferBar" value="0" max="100"></progress>
+                <progress id="CC_ProgressBar" class="CB_ProgressBar" value="0" max="100"></progress>
+                <input type="range" id="CC_SeekBar" class="CB_Scrubber" value="0" max="100">
+              </div>
+            </div>
+        </div>
+
+      </div>  
+    </div>
+    <div id="SideCtrl_btn" class="SidePanelBtn"  style="margin-top: 0vh;" >⌨</div>
+  </div>
+
+`;
+  // <div id="SideChro" class="SidePanel" >
+  //   <div id="SideChroTbl" class="SidePanelTbl" >
+  //     <div id="SideChroCnt" class="SidePanelCnt">
+
+  //     </div>
+  //   </div>
+  //   <div id="SideChro_btn"  class="SidePanelBtn"  style="margin-top: 20vh;" >⏱</div>
+  // </div>
+  AddChildHtmlById ('Main', ThisHtmlBlock);
+}
+// SELFCALL INIT
+LoadSideCnt();
+
+// SLIDER MNGMT
+/////////////////////////////////////////////////////////////////////////////////////
+
+class LeftSidePanel {
+  constructor(ThisPanelId, ThisPanelWidth, ThisVarName) {
+    if(IsNullString(ThisVarName)){
+      ThisVarName                 = "var_" + ThisPanelId;
+    }
+    this.OpenSideWidth            = ThisPanelWidth;
+
+    function SetBtnAction (That){
+      let ThisSidePanelBtn        = document.getElementById(ThisPanelId + "_btn");  
+      if(ThisSidePanelBtn){ 
+        ThisSidePanelBtn.onclick  = function(e) {That.Toggle(e); };
+      }
+    }
+    SetBtnAction (this);
+
+    this.IsClose                = function (){
+    let ThisSidePanelTbl        = document.getElementById(ThisPanelId + "Tbl");  
+    let ThisSideWidth           = ThisSidePanelTbl.style.width || 0;
+
+      if(ThisSideWidth         == (0)){
+        return true;
+      } 
+      return false;
+    }
+    this.Toggle                 = function (ThisEvent) {
+      
+      if(this.IsClose()){
+        this.OpenSidePanel(); 
+      } else {
+        this.CloseSidePanel();
+      }
+    }
+    this.ResetSidePanelSize     = function (ThisNewSize) {
+    let ThisSidePanelTbl        = document.getElementById(ThisPanelId + "Tbl");  
+    let ThisCurrentWidth        = (ThisSidePanelTbl.style.width);
+      
+      if(ThisCurrentWidth      == this.OpenSideWidth){
+        this.OpenSideWidth      = ThisNewSize;
+      } else {
+        this.OpenSideWidth      = ThisNewSize;
+        return;
+      }
+      ThisSidePanelTbl.style.width = this.OpenSideWidth; 
+    }
+    this.OpenSidePanel          = function (){
+    let ThisSidePanel           = document.getElementById(ThisPanelId);  
+    let ThisSidePanelTbl        = document.getElementById(ThisPanelId + "Tbl");  
+    let ThisSidePanelCnt        = document.getElementById(ThisPanelId + "Cnt");  
+    let ThisCurrentWidth        = ValueOf(ThisSidePanelTbl.style.width);
+      
+      if(ThisCurrentWidth      == this.OpenSideWidth){
+        return;
+      }
+      ThisSidePanelTbl.style.transition = "width 0.3s linear";
+      ThisSidePanel.style.zIndex        = "2147483640"; 
+      ThisSidePanelCnt.style.visibility = "hidden";
+
+      ThisSidePanelTbl.style.width      = this.OpenSideWidth; 
+      ThisSidePanelTbl.scrollTo({top: ThisSidePanelTbl.offsetHeight, behavior: 'smooth'});
+      setTimeout(function(){
+        ThisSidePanelTbl.style.transition = "";
+        ThisSidePanelCnt.style.visibility = "";
+        OnStateChange ()
+      }, 300);
+    }
+    this.CloseSidePanel         = function (){
+    let ThisSidePanel                   = document.getElementById(ThisPanelId);  
+    let ThisSidePanelTbl                = document.getElementById(ThisPanelId + "Tbl");  
+    let ThisSidePanelCnt                = document.getElementById(ThisPanelId + "Cnt");  
+    let ThisSideWidth                   = ThisSidePanelTbl.style.width || 0;
+      
+      if(ThisSideWidth                 == 0){
+        return;
+      }
+      ThisSidePanelTbl.style.transition = "width 0.3s linear";
+      ThisSidePanelTbl.style.width      = ""; 
+      ThisSidePanelCnt.style.visibility = "hidden";
+
+      setTimeout(function(){
+        ThisSidePanelTbl.style.transition = "";
+        ThisSidePanelCnt.style.visibility = "";
+        ThisSidePanel.style.zIndex        = ""; 
+        OnStateChange ();
+      }, 300);
+    }
+    function OnStateChange (){
+      var TriggerSidebarStatusChangeEvent = new CustomEvent('SidebarStatusChange' , {"detail":{"Obj":this}});     // addEventListener('VidCtrlStatusChange', doSomething, false);
+      dispatchEvent(TriggerSidebarStatusChangeEvent);
+    }
+  }
+}
+
+var TheSideFile           = new LeftSidePanel ("SideFile", "85vw");
+var TheSideCtrl           = new LeftSidePanel ("SideCtrl", "320px");
+// var TheSideChro           = new LeftSidePanel ("SideChro", "min(50vh, 55vw)");
+
+
+var VideoCtrlPanel        ;
+function VideoCtrlSetup     (){
+
+  function SetOnMouseEvent  (ThisEl){
+    if(IsNull(ThisEl)){return;}
+    ThisEl.onmousedown  = function(e) { SelectCtrlCC(ThisEl, e); };
+    ThisEl.onmouseup    = function(e) { SelectCtrlCC(ThisEl, e); };
+  }
+  function SetOnClick       (ThisEl){
+    if(IsNull(ThisEl)){return;}
+    ThisEl.onclick  = function(e) { SelectCtrlCC(ThisEl, e); };
+  }
+  function SetOn            (What, ThisEl){
+    if(IsNull(ThisEl)){return;}
+    ThisEl[What]    = function(e) { SelectCtrlCC(ThisEl, e); };
+  }
+  function SetOnFnc         (What, ThisEl, ThisFunc){
+    if(IsNull(ThisEl)){return;}
+    ThisEl[What]    = function(e) { ThisFunc(ThisEl, e); };
+  }
+  this.Video              = GetElementById("Vid_0");          
+  this.SidePanelCtrl      = GetElementById("SideCtrlTbl");
+
+  setTimeout(function (){
+    let ThisNewStyle        = `
+    .CB_BarButton > svg {
+    	width: 48px;
+    	height: 48px;
+    }  
+    .CB_VideoCtrlBar {
+    	height: 50px;
+    }
+    .CMList {
+    	width: 98%;
+    }
+
+    .CC_MenuButton > svg {
+    	width: min(6vw, 6vh);
+    	height: min(7vw, 7vh);
+    }
+    .CMList > .CMItem {
+      Height: min(9vw, 9vh);
+    }
+    #CM_BACK > svg, #CM_FWRD > svg, #CM_UP > svg, #CM_DOWN > svg {
+      width: min(5.752vw, 5.876vh);
+      height: min(4.752vw, 4.876vh);
+    }
+    #CM_SUB::after, #CM_POS::after, #CM_FLIP::after {
+    	font-size: min(2vh, 2vw);
+    }
+    `;  
+    if(this.Video){
+      this.Video.EnableLargeMenu(true);
+      this.Video.AddVideoStyle("LargeButton", ThisNewStyle);
+      AddStyleRules("LargeButton", ThisNewStyle);
+    }
+  }, 100);
+
+  this.VolumeCtrl         = GetElementById("CC_VolumeControl");
+  this.SpeedDownCtrl      = GetElementById("CC_DOWN"); 
+  this.SpeedUpCtrl        = GetElementById("CC_UP");
+  this.VidPosBackCtrl     = GetElementById("CC_BACK");
+  this.VidPosFwrdCtrl     = GetElementById("CC_FWRD");
+
+  // VALUES CTRL PAIR
+  this.VolumeBar          = GetElementById("CC_VolumeBar");
+
+  this.ProgressBar        = GetElementById("CC_ProgressBar");
+  this.BufferedBar        = GetElementById("CC_BufferedBar");
+  this.SeekBar            = GetElementById("CC_SeekBar");
+  this.SeekToolTip        = GetElementById("CC_SeekTooltip");
+
+  // VALUES 
+  this.SpeedObj           = GetElementById("CC_Speed");
+  this.VideoPosObj        = GetElementById("CC_POSI");
+  this.VideoElapse        = GetElementById("CC_TimeElapsed");
+  this.VideoDuration      = GetElementById("CC_Duration");
+  
+
+  SetOn      ("oninput",    this.VolumeBar); 
+  SetOn      ("oninput",    this.SpeedObj);
+  SetOnMouseEvent          (this.SpeedUpCtrl);
+  SetOnMouseEvent          (this.SpeedDownCtrl);
+  SetOn      ("onkeyup",    this.VideoPosObj);
+  // SetOnFnc   ("onfocus",    this.VideoPosObj, OnEditMode);
+  // SetOnFnc   ("onblur",     this.VideoPosObj, OnLeaveEditMode);
+
+  SetOnMouseEvent          (this.VidPosBackCtrl);
+  SetOnMouseEvent          (this.VidPosFwrdCtrl);
+
+  SetOn      ("oninput",    this.SeekBar);
+  SetOn      ("onmousemove",this.SeekBar);
+
+  function  OnLeaveEditMode  (This, ThisEvent){
+    PreventAllPropagation    (ThisEvent);
+    if(!(this.Video)){return;}
+    if(TheSideCtrl.IsClose() ){return;}
+    StartSycn ();
+  }
+  function  OnEditMode       (This, ThisEvent){
+    PreventAllPropagation    (ThisEvent);
+    if(!(this.Video)){return;}
+    if(TheSideCtrl.IsClose() ){return;}
+    StopSycn  ();
+  }
+  function SelectCtrlCC      (This, ThisEvent){
+    let ThisKey            = ThisEvent.keyCode || ThisEvent.which || ThisEvent.charCode ;    
+    var ThisObj;
+    PreventAllPropagation    (ThisEvent);
+    if(!(this.Video)){return;}
+    if(TheSideCtrl.IsClose() ){return;}
+    if(PreventRedundancy     (ThisEvent)){
+      return;
+    }
+
+    if(This){
+      switch(This.id){
+      case "CC_POSI":                 
+        if(ThisKey                 == 13) { 
+        let ThisVideoTime           = SMPTE(This.value);
+          if((ThisVideoTime        >= 0)
+          && (ThisVideoTime        <= this.Video.duration)
+          ){ 
+           this.Video.currentTime   = (ThisVideoTime);
+          }
+        } 
+        return;
+
+      case "CC_Speed":   
+        let ThisValue      = parseFloat(This.value);              
+        if(ThisValue       < 0){
+          This.value       = "0%";
+        } 
+        this.Video.playbackRate = parseFloat(This.value) / 100.0;
+        if(ThisKey        == 13){ 
+          break; 
+        } 
+        return;
+
+      case "CC_BACK":         
+      case "CC_FWRD": 
+        if(MouseDownAutoRepeat(ThisEvent.view, This, ThisEvent)){
+         return;
+        }
+        if((IsFalse(IsLeftButDown(ThisEvent)))
+        || (ThisEvent.type == "mouseup")
+        ){
+         return;
+        }
+        if(This.id                  == "CC_BACK"){
+         let ThisVideoTime          = (this.Video.currentTime -1);
+         if(ThisVideoTime          >= 0){ 
+           this.Video.currentTime   = (ThisVideoTime);
+         }
+        } else {
+         let ThisVideoTime          = (this.Video.currentTime +1);
+         if(ThisVideoTime          <= this.Video.duration){ 
+           this.Video.currentTime   = (ThisVideoTime);
+         }
+        } 
+        return;
+
+      case "CC_VolumeBar":  this.Video.volume = This.value; return;
+      case "CC_UP":         
+      case "CC_DOWN":       
+        if(MouseDownAutoRepeat(ThisEvent.view, This, ThisEvent)){
+          return;
+        }
+        if((IsFalse(IsLeftButDown(ThisEvent)))
+        || (ThisEvent.type == "mouseup")
+        ){
+          return;
+        }
+        if(This.id     == "CC_UP"){
+         This          = GetElementById("CC_Speed");
+         This.value    = Number(parseFloat(This.value) + 10) + "%";
+        } else {
+         This          = GetElementById("CC_Speed");
+         This.value    = Number(parseFloat(This.value) - 5) + "%";
+        }
+        console.log(This.id, ThisEvent.type);
+        return;
+
+      case "CC_SeekBar":  
+        if(ThisEvent.type          == 'mousemove'){
+        let skipTo                  = ((ThisEvent.offsetX  / ThisEvent.target.clientWidth) 
+                                    * parseInt(ThisEvent.target.getAttribute('max'), 10)); // Math.round
+          skipTo.toFixed(3);
+          const ThisTimeFormated    = ToSMPTE(skipTo);
+
+          ThisObj                   = GetElementById ("CC_SeekTooltip");
+          ThisObj.textContent       = ThisTimeFormated;
+          ThisObj.setAttribute        ('datetime', ThisTimeFormated);
+          ThisObj.style.left        = `0px`; // ${Math.abs(ThisEvent.pageX - parseInt(rect.left))}px
+
+        } else {
+        let   skipTo                = ThisEvent.target.dataset.seek ? ThisEvent.target.dataset.seek : ThisEvent.target.value;
+        let   TargetTime            = Number(this.Video.BaseStartTime) + Number(skipTo);
+          this.Video.currentTime    = TargetTime;
+          this.ProgressBar.value    = skipTo;
+          this.SeekBar.value        = skipTo;
+        }
+        return;
+
+      }
+    }  
+  }
+
+
+  function UpdateVideoStatus  (ThisEvent){
+    if(!(this.Video)){return;}
+    if(TheSideCtrl.IsClose() ){return;}
+    let ThisShared                 = this.Video.Shared;
+    let ThisObj   ; 
+    let VideoDuration;
+    
+    this.VolumeBar.value = this.Video.volume;
+
+    VideoDuration = ThisShared.CtrlBufferedBar.getAttribute ('max');
+    
+    this.BufferedBar.setAttribute     ('max', VideoDuration);
+    this.BufferedBar.style.backgroundImage = ThisShared.CtrlBufferedBar.style.backgroundImage;
+    this.BufferedBar.value          = (ThisShared.CtrlBufferedBar.value);
+
+    this.ProgressBar.setAttribute     ('max', VideoDuration);
+    this.ProgressBar.value          = (ThisShared.CtrlProgressBar.value);
+
+    this.SeekBar.setAttribute         ('max', VideoDuration);
+    this.SeekBar.value              = (ThisShared.CtrlSeekBar.value);
+
+    let ThisTimeFormated            = ToSMPTE(VideoDuration);
+
+    this.VideoDuration.innerText    = ThisTimeFormated;
+    this.VideoDuration.setAttribute   ('datetime', ThisTimeFormated);
+
+    ThisTimeFormated                = ToSMPTE(this.Video.currentTime - this.Video.BaseStartTime);
+    this.VideoElapse.innerText      = ThisTimeFormated;
+    this.VideoElapse.setAttribute     ('datetime', ThisTimeFormated);
+
+    this.VideoPosObj.value          = (ThisTimeFormated);
+
+    this.SeekToolTip.textContent    = (ThisTimeFormated);
+    // Beep();
+    this.SpeedObj.value             = FixToTxt(this.Video.playbackRate * 100.0, 2) + "%";
+  }
+  function StartSycn (){
+    
+    addEventListener('SidebarStatusChange',     UpdateVideoStatus, false);
+    addEventListener('VidCtrlStatusChange',     UpdateVideoStatus, false);
+  }
+  function StopSycn (){
+    removeEventListener('SidebarStatusChange',  UpdateVideoStatus);
+    removeEventListener('VidCtrlStatusChange',  UpdateVideoStatus);
+  }
+  StopSycn  ();
+  StartSycn ();
+
+  return {
+    UpdateVideoStatus : UpdateVideoStatus
+    
+  };
+}
+function InitVideoCtrl      (){
+
+  VideoCtrlPanel            = VideoCtrlSetup ();
+}
+
+
+
+// AllowDebug                = true;
+// TurnOnDebug();
+
+var ProjectDesc           = "";
+var RootProject           = "";
+var Resources             = {};
+function OnClearProject(ThisEvent){
+  let ThisPrjSubView      = document.getElementById("PrjSubView");
+  ThisPrjSubView.innerHTML= "";
+  ProjectDesc             = "";
+  RootProject             = "";
+  Resources               = {};
+}
+function ProcessProjectDropped (ThisEntry, ThisSrcName, ThisType){
+  let ThisPrjSubView      = document.getElementById("PrjSubView");
+
+  function HandleThisFile (ThisFile, ThisFilename){
+    // console.warn("Processing HandleFile", ThisFile, ThisType);
+    let ThisRstDict       = document.getElementById("RstDict");
+    ProcessProjectFile (ThisFile, ThisFilename, ThisRstDict);
+  } 
+  if(ThisEntry.isFile) {
+    // console.log("isFile", ThisSrcName, ThisType, ThisEntry);
+    let ThisFilename    = ThisEntry.fullPath;
+    ThisFilename        = RemoveText(ThisFilename, RootProject);
+
+    HandleFileLink        (ThisFilename);
+    ThisEntry.file(function (ThisFile){ HandleThisFile(ThisFile, ThisFilename)});
+
+  } else if(ThisEntry.isDirectory) { 
+  //   console.log("isDirectory", ThisSrcName, ThisType, ThisEntry);
+  //   ThisPrjSubView.innerHTML += "Parsing Directory: "+ThisEntry.fullPath+"\n";
+  } else {
+    // console.log("Entry name: ", ThisSrcName, ThisType, ThisEntry);
+    ThisPrjSubView.innerHTML += "Entry name: "+ThisSrcName+"\n";
+    if((IsNullString(RootProject))
+    && (ThisSrcName     != "Dropped")
+    ){
+       RootProject       = ThisSrcName + "/"; 
+    }
+    let ThisObjectName    = ThisEntry.toString();
+    if(ThisObjectName    == "[object DataTransferItemList]" ){
+      if(IsNotNull(ThisEntry.length)){
+        // console.log("Entry Count: ",    ThisEntry, ThisSrcName, ThisEntry.length);
+        ThisPrjSubView.innerHTML += "Entry Count: "+ThisEntry.length+"\n";
+      }
+    } else 
+    if(IsNotNull(ThisEntry.length)){
+      let ThisCount       = 0;
+      ThisEntry.forEach(function (ThisItem){
+        if(ThisItem.isFile){
+          ThisCount++;
+        }
+      })
+      // console.log("File Count: ",ThisEntry, ThisSrcName, ThisCount);
+      ThisPrjSubView.innerHTML += "File Count: "+ThisCount+"\n";
+    }
+  }
+  ProjectDesc             = ThisPrjSubView.innerHTML;
+}
+function HandleFileLink     (ThisFilename){
+  let ThisPrjSubView      = document.getElementById("PrjSubView");
+
+  let ThisFileId          = null;
+  let ThisExt             = ExtractFileExt(ThisFilename);
+  ThisFilename            = RemoveText(ThisFilename, RootProject);
+
+  if((ThisExt             == ".mp4")
+  || (ThisExt             == ".webm")
+  || (ThisExt             == ".dash")
+  ){
+    ThisFileId                = ThisFilename;
+    ThisPrjSubView.innerHTML += `
+    <div class="Boxed">
+      <div class="BoxedInner">
+        <a tabindex="-1" class="VideoFile" onfocus="OnFocus(event)" onclick='OnInsertLink(this, event, "`+(ThisFileId)+`" )' >`+ThisFilename+`</a>
+      </div>
+    </div>
+    `;
+  } else 
+  if((ThisExt             == ".mp3")
+  ){
+    ThisFileId                = ThisFilename;
+    ThisPrjSubView.innerHTML += `\t<a tabindex="-1" class="AudioFile" onfocus="OnFocus(event)" onclick='OnInsertLink(this, event, "`+(ThisFileId)+`" )' >`+ThisFilename+`</a>\n`;
+  }
+}
+function ProcessProjectFile (ThisFile, ThisFilename){
+  let ThisExt             = ExtractFileExt(ThisFilename);
+
+  // console.warn(ThisExt + "\t" + ThisFile.name + "\n", ThisFile);
+  // if((ThisFile.type      == "application/x-javascript"))
+  if((ThisExt             == ".mp4")
+  || (ThisExt             == ".webm")
+  || (ThisExt             == ".dash")
+  ){ // create a link from the file:
+    var ThisVideo         = URL.createObjectURL(ThisFile);
+    Resources[ThisFilename] = ThisVideo;
+  } else 
+  if((ThisExt              == ".mp3")
+  ){ 
+    var ThisAudio         = URL.createObjectURL(ThisFile);
+    Resources[ThisFilename] = ThisAudio;
+  }
+}
+function OnProcessFiles(ThisEvent){
+ 
+  UseInputFileById ("Interact", "GetFile", function (ThisFile){
+    ProcessProjectFile (ThisFile, ThisFile.name); // NA .webkitRelativePath;
+    HandleFileLink    (ThisFile.name);
+  }, true);
+
+}
+function OnProcessFolder(ThisEvent){
+
+  UseInputFolderById ("Interact", "GetFile", function (TheseFiles){
+
+    for(let Indx = 0; Indx  < TheseFiles.length; Indx++) {
+      let ThisFile        = TheseFiles[Indx]; // .webkitRelativePath;
+      ProcessProjectFile (ThisFile, ThisFile.webkitRelativePath);
+      HandleFileLink (ThisFile.webkitRelativePath);
+    }
+  }, true);
+}
+
+
+
+
+
+
+
+function OnFocus(ThisEvent) {
+  PreventAllPropagation(ThisEvent);
+  if(ThisEvent.relatedTarget) {
+    // Revert focus back to previous blurring element
+    ThisEvent.relatedTarget.focus();
+  } else {
+    // No previous focus target, blur instead
+    ThisEvent.currentTarget.blur();
+  }
+}
+function OnInsertLink (This, ThisEvent, ThisFileId){
+  let ThisVideo         = GetElementById("Vid_0");
+
+  ThisVideo.src         = Resources[ThisFileId];
+  TheSideFile.CloseSidePanel();
+}
+DisplayReport("Show Version ", ShowVersion, "Loaded");
+</script>
+
+
+</body>
+</html>
